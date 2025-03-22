@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from function_homework.decomposition_string import normalize_text  # Імпортуємо функцію для нормалізації тексту
+from function_homework.decomposition_string import normalize_text
 
 class Basic_class:
     #Base class for all posts
