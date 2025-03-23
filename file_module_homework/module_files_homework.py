@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 from function_homework.decomposition_string import normalize_text
 
-class Basic_class:
+class BasicClass:
     #Base class for all posts
     def __init__(self, text=None):
         if text:
@@ -17,7 +17,13 @@ class Basic_class:
             value = input(prompt)
         return normalize_text(value.strip())
 
-class News(Basic_class):
+    def get_content(self):
+        raise NotImplementedError("Subclasses must implement get_content method")
+
+    def publish(self, file):
+        file.write(self.get_content() + "\n" + "-" * 40 + "\n")
+
+class News(BasicClass):
     #News post with city and automatic date
     def __init__(self, text=None):
         super().__init__(text)
@@ -28,7 +34,7 @@ class News(Basic_class):
         #news content
         return f"News: {self.text}\nCity: {self.city}\nPublished: {self.date}"
 
-class PrivateAd(Basic_class):
+class PrivateAd(BasicClass):
     #Private ad post with expiration date and remaining day
     def __init__(self, text=None):
         super().__init__(text)
@@ -52,7 +58,7 @@ class PrivateAd(Basic_class):
         #Private ad content
         return f"Private Ad: {self.text}\nExpires: {self.expiration_date.strftime('%Y-%m-%d')}\nDays left: {self.days_left}"
 
-class UniquePublish(Basic_class):
+class UniquePublish(BasicClass):
     #User-generated post with author name
     def __init__(self, text=None):
         super().__init__(text)
@@ -64,25 +70,22 @@ class UniquePublish(Basic_class):
         return f"Custom Post by {self.author}:\n{self.text}\nPublished: {self.timestamp}"
 
 class NewsFeed:
-    #Main class for news feed
-
+    # Main class for news feed
     FILE_NAME = "news_feed_homework.txt"
     DEFAULT_FOLDER = "posts_folder"
 
     def __init__(self):
         self._file = open(self.FILE_NAME, "a", encoding="utf-8")
 
-    def publish(self, content):
-        #Writes post content to file
-        self._file.write(content + "\n" + "-" * 40 + "\n")
+    def create_post(self, post_class, text=None):
+        post = post_class(text) if text else post_class()
+        post.publish(self._file)
 
     def close_file(self):
-        #Closes the file before exiting
         self._file.close()
         print("File closed successfully.")
 
     def run(self):
-        #Main loop for selecting and adding posts
         while True:
             print("Select post type:")
             print("1. News")
@@ -92,27 +95,20 @@ class NewsFeed:
 
             choice = input("Enter your choice: ").strip()
 
-            if choice == "1":
-                self._process_with_file_check(News)
-            elif choice == "2":
-                self._process_with_file_check(PrivateAd)
-            elif choice == "3":
-                self._process_with_file_check(UniquePublish)
-            elif choice == "4":
+            if choice == "4":
                 print("Your exit was successful")
                 self.close_file()
                 break
+            elif choice in {"1", "2", "3"}:
+                self._process_with_file_check({"1": News, "2": PrivateAd, "3": UniquePublish}[choice])
             else:
                 print("Invalid choice")
 
     def _process_with_file_check(self, post_class):
-        #Content in the file?
         use_file = input("Do you want to load data from a file? (yes/no): ").strip().lower()
 
         if use_file == "yes":
             file_name = input("Enter the file name: ").strip()
-
-            #Full file path
             file_path = os.path.join(self.DEFAULT_FOLDER, file_name)
 
             if os.path.exists(file_path):
@@ -120,33 +116,27 @@ class NewsFeed:
                     file_content = file.read().strip()
                     normalized_content = normalize_text(file_content)
                     print(f"Loaded content from file: {normalized_content}")
-                    post = post_class(normalized_content)
-                    self.publish(post.get_content())
+                    self.create_post(post_class, normalized_content)
                 os.remove(file_path)
                 print(f"File {file_path} has been successfully processed and deleted.")
             else:
                 print(f"File {file_path} does not exist.")
         else:
-            post = post_class()
-            self.publish(post.get_content())
+            self.create_post(post_class)
 
 class FilePostProcessor:
-
     def __init__(self, file_path=None):
-        self.file_path = file_path or "post.txt"  # Default file path if none provided
-        self.default_folder = "posts_folder"  # Default folder
+        self.file_path = file_path or "post.txt"
+        self.default_folder = "posts_folder"
 
     def process_file(self):
-        # Check if the file exists
         if not os.path.exists(self.file_path):
             print(f"Error: {self.file_path} not found.")
             return
 
-        #Open and read the file
         with open(self.file_path, "r", encoding="utf-8") as file:
             lines = file.readlines()
 
-        # Process each line
         for line in lines:
             record = normalize_text(line.strip())
             print(f"Processed Record: {record}")
@@ -154,7 +144,6 @@ class FilePostProcessor:
         self.delete_file()
 
     def delete_file(self):
-        #Deletes the file if it was successfully
         try:
             os.remove(self.file_path)
             print(f"{self.file_path} has been deleted successfully.")
