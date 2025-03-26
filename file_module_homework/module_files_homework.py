@@ -1,21 +1,33 @@
 import os
 from datetime import datetime
-from function_homework.decomposition_string import normalize_text
+from function_homework.decomposition_string import (
+    normalize_text,
+    split_into_sentences,
+    capitalize_sentences,
+    join_sentences_with_spacing
+)
+
 
 class BasicClass:
-    #Base class for all posts
+    # Base class for all posts
     def __init__(self, text=None):
         if text:
-            self.text = normalize_text(text.strip())
+            self.text = self._process_text(text.strip())
         else:
-            self.text = self._validate_input(input("Enter post text: "), "Enter post text: ")
+            self.text = self._process_text(self._validate_input(input("Enter post text: "), "Enter post text: "))
 
     def _validate_input(self, value, prompt):
-        #input is not empty
+        # Input is not empty
         while not value.strip():
             print("Input cannot be empty.")
             value = input(prompt)
-        return normalize_text(value.strip())
+        return self._process_text(value.strip())
+
+    def _process_text(self, text):
+        normalized = normalize_text(text)
+        sentences = split_into_sentences(normalized)
+        capitalized = capitalize_sentences(sentences)
+        return join_sentences_with_spacing(capitalized)
 
     def get_content(self):
         raise NotImplementedError("Subclasses must implement get_content method")
@@ -23,26 +35,28 @@ class BasicClass:
     def publish(self, file):
         file.write(self.get_content() + "\n" + "-" * 40 + "\n")
 
+
 class News(BasicClass):
-    #News post with city and automatic date
+    # News post with city and automatic date
     def __init__(self, text=None):
         super().__init__(text)
         self.city = self._validate_input(input("Enter city: "), "Enter city: ")
         self.date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     def get_content(self):
-        #news content
+        # News content
         return f"News: {self.text}\nCity: {self.city}\nPublished: {self.date}"
 
+
 class PrivateAd(BasicClass):
-    #Private ad post with expiration date and remaining day
+    # Private ad post with expiration date and remaining days
     def __init__(self, text=None):
         super().__init__(text)
         self.expiration_date = self._get_valid_date()
         self.days_left = (self.expiration_date - datetime.now()).days
 
     def _get_valid_date(self):
-        #Validating date input
+        # Validating date input
         while True:
             date_str = input("Enter expiration date (YYYY-MM-DD): ")
             try:
@@ -55,19 +69,21 @@ class PrivateAd(BasicClass):
                 print("Invalid date format. Use YYYY-MM-DD.")
 
     def get_content(self):
-        #Private ad content
+        # Private ad content
         return f"Private Ad: {self.text}\nExpires: {self.expiration_date.strftime('%Y-%m-%d')}\nDays left: {self.days_left}"
 
+
 class UniquePublish(BasicClass):
-    #User-generated post with author name
+    # User-generated post with author name
     def __init__(self, text=None):
         super().__init__(text)
         self.author = self._validate_input(input("Enter your name: "), "Enter your name: ")
         self.timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     def get_content(self):
-        #Unique publish content
+        # Unique publish content
         return f"Custom Post by {self.author}:\n{self.text}\nPublished: {self.timestamp}"
+
 
 class NewsFeed:
     # Main class for news feed
@@ -105,33 +121,47 @@ class NewsFeed:
                 print("Invalid choice")
 
     def _process_with_file_check(self, post_class):
-        use_file = input("Do you want to load data from a file? (yes/no): ").strip().lower()
+        while True:
+            use_file = input("Do you want to load data from a file? (yes/no): ").strip().lower()
 
-        if use_file == "yes":
-            file_name = input("Enter the file name: ").strip()
-            file_path = os.path.join(self.DEFAULT_FOLDER, file_name)
+            if use_file == "yes":
+                while True:
+                    file_name = input("Enter the file name: ").strip()
+                    file_path = os.path.join(self.DEFAULT_FOLDER, file_name)
 
-            if os.path.exists(file_path):
-                with open(file_path, "r", encoding="utf-8") as file:
-                    file_content = file.read().strip()
-                    normalized_content = normalize_text(file_content)
-                    print(f"Loaded content from file: {normalized_content}")
-                    self.create_post(post_class, normalized_content)
-                os.remove(file_path)
-                print(f"File {file_path} has been successfully processed and deleted.")
+                    if os.path.exists(file_path):
+                        with open(file_path, "r", encoding="utf-8") as file:
+                            file_content = file.read().strip()
+                            print(f"Loaded content from file: {file_content}")
+                            self.create_post(post_class, file_content)
+                        os.remove(file_path)
+                        print(f"File {file_path} has been successfully processed and deleted.")
+                        return
+                    else:
+                        print(f"File {file_path} does not exist. Please enter the correct file name.")
+
+            elif use_file == "no":
+                self.create_post(post_class)
+                return
             else:
-                print(f"File {file_path} does not exist.")
-        else:
-            self.create_post(post_class)
+                print("Please enter 'yes' or 'no'.")
+
+
+if __name__ == "__main__":
+    news_feed = NewsFeed()
+    news_feed.run()
+
 
 class FilePostProcessor:
     def __init__(self, file_path=None):
-        self.file_path = file_path or "post.txt"
+        self.file_path = file_path
         self.default_folder = "posts_folder"
 
     def process_file(self):
+        if not self.file_path:
+            return
+
         if not os.path.exists(self.file_path):
-            print(f"Error: {self.file_path} not found.")
             return
 
         with open(self.file_path, "r", encoding="utf-8") as file:
@@ -150,9 +180,7 @@ class FilePostProcessor:
         except Exception as e:
             print(f"Error deleting the file: {e}")
 
-if __name__ == "__main__":
-    news_feed = NewsFeed()
-    news_feed.run()
 
+if __name__ == "__main__":
     file_processor = FilePostProcessor()
     file_processor.process_file()
