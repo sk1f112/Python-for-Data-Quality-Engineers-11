@@ -30,7 +30,7 @@ def count_letters(text):
 
     letter_stats = []
     for letter, count in sorted(total_letters.items()):
-        percentage = (count / total_count) * 100 if total_count else 0
+        percentage = (count / total_count) * 100
         letter_stats.append((letter, count, uppercase_count, round(percentage, 2)))
 
     return letter_stats
