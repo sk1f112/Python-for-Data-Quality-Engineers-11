@@ -1,0 +1,13 @@
+<posts>
+    <post>
+        <type>News</type>
+        <text>Content for news from XML file.</text>
+        <city>Kyiv</city>
+        <date>2025-12-12</date>
+    </post>
+    <post>
+        <type>PrivateAd</type>
+        <text>Content for PrivateAd from XML file.</text>
+        <expiration_date>2025-12-12</expiration_date>
+    </post>
+</posts>

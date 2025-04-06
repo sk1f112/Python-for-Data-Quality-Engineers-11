@@ -1,0 +1,7 @@
+{
+  "type": "News",
+  "text": "Content for news from json with single records",
+  "city": "Kyiv",
+  "expiration_date": null,
+  "author": null
+}

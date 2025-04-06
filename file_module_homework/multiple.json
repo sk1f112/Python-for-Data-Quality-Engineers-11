@@ -1,0 +1,23 @@
+[
+  {
+    "type": "News",
+    "text": "Content for news from json",
+    "city": "Kyiv",
+    "expiration_date": null,
+    "author": null
+  },
+  {
+    "type": "PrivateAd",
+    "text": "Content for PrivateAd from json",
+    "city": null,
+    "expiration_date": "2025-12-12",
+    "author": null
+  },
+  {
+    "type": "UniquePublish",
+    "text": "HContent for UniquePublish from json",
+    "city": null,
+    "expiration_date": null,
+    "author": "Vlad O."
+  }
+]
