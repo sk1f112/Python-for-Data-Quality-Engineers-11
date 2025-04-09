@@ -1,0 +1,20 @@
+News: This Iz CONTENT for news feed
+City: Qweqw
+Published: 2025-04-09 20:53:47
+----------------------------------------
+News: This Iz CONTENT for news feed
+City: Wer
+Published: 2025-04-09 20:56:55
+----------------------------------------
+Private Ad: This iS contEnt FOR private AD fEEd
+Expires: 2025-12-12
+Days left: 246
+----------------------------------------
+News: This Iz CONTENT for news feed
+City: Qewweqqew
+Published: 2025-04-09 21:34:52
+----------------------------------------
+News: Content for news from json with single records
+City: Kyiv
+Published: 2025-04-09 21:37:05
+----------------------------------------

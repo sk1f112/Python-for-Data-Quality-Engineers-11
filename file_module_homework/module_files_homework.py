@@ -125,30 +125,38 @@ class NewsFeed:
         self._file.close()
         print("File closed successfully.")
 
+    def txt_process(self, post_class):
+        while True:
+            file_name = input("Enter the file name: ").strip()
+            file_path = os.path.join(self.DEFAULT_FOLDER, file_name)
+
+            if os.path.exists(file_path):
+                with open(file_path, "r", encoding="utf-8") as file:
+                    file_content = file.read().strip()
+                    print(f"Loaded content from file: {file_content}")
+                    self.create_post(post_class, file_content)
+                os.remove(file_path)
+                print(f"File {file_path} has been successfully processed and deleted.")
+                return
+            else:
+                print(f"File {file_path} does not exist. Please enter the correct file name.")
+
     def run(self):
         while True:
             print("Select post type:")
             print("1. News")
             print("2. Private Ad")
             print("3. Unique publish")
-            print("4. Load from JSON file")
-            print("5. Load from XML file")
-            print("6. Exit")
+            print("4. Exit")
 
             choice = input("Enter your choice: ").strip()
 
-            if choice == "6":
+            if choice == "4":
                 print("Your exit was successful")
                 self.close_file()
                 break
             elif choice in {"1", "2", "3"}:
                 self._process_with_file_check({"1": News, "2": PrivateAd, "3": UniquePublish}[choice])
-            elif choice == "4":
-                processor = JsonPostProcessor()
-                processor.process()
-            elif choice == "5":
-                processor = XmlPostProcessor()
-                processor.process()
             else:
                 print("Invalid choice")
 
@@ -158,20 +166,21 @@ class NewsFeed:
 
             if use_file == "yes":
                 while True:
-                    file_name = input("Enter the file name: ").strip()
-                    file_path = os.path.join(self.DEFAULT_FOLDER, file_name)
+                    file_type = input("Enter file type (.txt / .json / .xml): ").strip().lower()
 
-                    if os.path.exists(file_path):
-                        with open(file_path, "r", encoding="utf-8") as file:
-                            file_content = file.read().strip()
-                            print(f"Loaded content from file: {file_content}")
-                            self.create_post(post_class, file_content)
-                        os.remove(file_path)
-                        print(f"File {file_path} has been successfully processed and deleted.")
+                    if file_type == ".txt":
+                        self.txt_process(post_class)
+                        return
+                    elif file_type == ".json":
+                        processor = JsonPostProcessor()
+                        processor.process()
+                        return
+                    elif file_type == ".xml":
+                        processor = XmlPostProcessor()
+                        processor.process()
                         return
                     else:
-                        print(f"File {file_path} does not exist. Please enter the correct file name.")
-
+                        print("Invalid file type. Choose from .txt, .json, .xml.")
             elif use_file == "no":
                 self.create_post(post_class)
                 return
@@ -214,10 +223,11 @@ class JsonPostProcessor:
                 for record in data:
                     self._process_record(record, outfile)
 
-            self._delete_file()
+            self._delete_file(success=True)
 
         except Exception as e:
             print(f"Error while processing the file: {e}")
+            self._delete_file(success=False)
 
     def _process_record(self, record, file):
         post_type = record.get("type")
@@ -260,12 +270,24 @@ class JsonPostProcessor:
         capitalized = capitalize_sentences(sentences)
         return join_sentences_with_spacing(capitalized)
 
-    def _delete_file(self):
+    def _delete_file(self, success: bool):
+        abs_default_folder = os.path.abspath("posts_folder")
+        abs_file_path = os.path.abspath(self.file_path)
+
+        if not success:
+            print(f"File {self.file_path} was not deleted because processing failed.")
+            return
+
+        if os.path.commonpath([abs_default_folder]) not in abs_file_path:
+            print(f"File {self.file_path} was processed but not deleted (outside of posts_folder).")
+            return
+
         try:
             os.remove(self.file_path)
             print(f"File {self.file_path} deleted after successful processing.")
         except Exception as e:
             print(f"Failed to delete file: {e}")
+
 
 class XmlPostProcessor:
     def __init__(self, output_file="news_feed_homework.txt"):
@@ -274,7 +296,8 @@ class XmlPostProcessor:
 
     def process(self):
         while True:
-            self.file_path = input("Enter the full path to the XML file (or just file name if it's in current directory): ").strip()
+            self.file_path = input(
+                "Enter the full path to the XML file (or just file name if it's in current directory): ").strip()
 
             if not self.file_path:
                 print("File path cannot be empty. Please enter a valid file path.")
@@ -286,25 +309,34 @@ class XmlPostProcessor:
 
             break
 
-        # Ask the user if the XML file contains one or many records
-        while True:
-            multiple = input("Does the XML file contain multiple records? (yes/no): ").strip().lower()
+        try:
+            # Ask the user if the XML file contains one or many records
+            while True:
+                multiple = input("Does the XML file contain multiple records? (yes/no): ").strip().lower()
 
-            if multiple == "no":
-                records = self._process_single_post(self.file_path)
-                break
-            elif multiple == "yes":
-                records = self._process_multiple_posts(self.file_path)
-                break
-            else:
-                print("Invalid input. Please enter 'yes' or 'no'.")
+                if multiple == "no":
+                    records = self._process_single_post(self.file_path)
+                    break
+                elif multiple == "yes":
+                    records = self._process_multiple_posts(self.file_path)
+                    break
+                else:
+                    print("Invalid input. Please enter 'yes' or 'no'.")
 
-        # Write the records to the output file
-        with open(self.output_file, "a", encoding="utf-8") as outfile:
-            for record in records:
-                self._process_record(record, outfile)
+            if not records:
+                self._delete_file(success=False)
+                return
 
-        self._delete_file()
+            # Write the records to the output file
+            with open(self.output_file, "a", encoding="utf-8") as outfile:
+                for record in records:
+                    self._process_record(record, outfile)
+
+            self._delete_file(success=True)
+
+        except Exception as e:
+            print(f"Error while processing the file: {e}")
+            self._delete_file(success=False)
 
     def _process_single_post(self, file_path):
         try:
@@ -382,12 +414,24 @@ class XmlPostProcessor:
         capitalized = capitalize_sentences(sentences)
         return join_sentences_with_spacing(capitalized)
 
-    def _delete_file(self):
+    def _delete_file(self, success: bool):
+        abs_default_folder = os.path.abspath("posts_folder")
+        abs_file_path = os.path.abspath(self.file_path)
+
+        if not success:
+            print(f"File {self.file_path} was not deleted because processing failed.")
+            return
+
+        if os.path.commonpath([abs_default_folder]) not in abs_file_path:
+            print(f"File {self.file_path} was processed but not deleted (outside of posts_folder).")
+            return
+
         try:
             os.remove(self.file_path)
             print(f"File {self.file_path} deleted after successful processing.")
         except Exception as e:
             print(f"Failed to delete file: {e}")
+
 
 if __name__ == "__main__":
     news_feed = NewsFeed()
