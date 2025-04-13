@@ -19,7 +19,6 @@ class BasicClass:
             self.text = input("Enter post text: ").strip()
 
     def _validate_input(self, value, prompt):
-        # Input is not empty
         while not value.strip():
             print("Input cannot be empty.")
             value = input(prompt)
@@ -125,7 +124,6 @@ class UniquePublish(BasicClass):
         db_handler.insert_unique(self.text, self.author, self.timestamp)
 
 class NewsFeed:
-    # Main class for news feed
     FILE_NAME = "news_feed_homework.txt"
     DEFAULT_FOLDER = "posts_folder"
 
@@ -417,7 +415,6 @@ class XmlPostProcessor:
             break
 
         try:
-            # Ask the user if the XML file contains one or many records
             while True:
                 multiple = input("Does the XML file contain multiple records? (yes/no): ").strip().lower()
 
@@ -434,7 +431,6 @@ class XmlPostProcessor:
                 self._delete_file(success=False)
                 return
 
-            # Write the records to the output file
             with open(self.output_file, "a", encoding="utf-8") as outfile:
                 for record in records:
                     self._process_record(record, outfile)
@@ -450,7 +446,6 @@ class XmlPostProcessor:
             tree = ET.parse(file_path)
             root = tree.getroot()
 
-            # Assuming the root is a single post
             if root.tag == "post":
                 return [root]
             else:
@@ -465,7 +460,6 @@ class XmlPostProcessor:
             tree = ET.parse(file_path)
             root = tree.getroot()
 
-            # Assuming the root is <posts> containing multiple <post> elements
             if root.tag == "posts":
                 return root.findall("post")
             else:
