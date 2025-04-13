@@ -18,3 +18,157 @@ News: Content for news from json with single records
 City: Kyiv
 Published: 2025-04-09 21:37:05
 ----------------------------------------
+News: 123
+City: 123
+Published: 2025-04-13 16:55:12
+----------------------------------------
+News: 213
+City: 213
+Published: 2025-04-13 16:58:45
+----------------------------------------
+Private Ad: 123
+Expires: 2025-11-11
+Days left: 211
+----------------------------------------
+News: 123
+City: 123
+Published: 2025-04-13 17:06:23
+----------------------------------------
+News: 2222
+City: 222222
+Published: 2025-04-13 17:08:06
+----------------------------------------
+News: qwe
+City: Qwe
+Published: 2025-04-13 17:13:14
+----------------------------------------
+News: 123
+City: 123
+Published: 2025-04-13 17:22:31
+----------------------------------------
+News: 123
+City: 123
+Published: 2025-04-13 17:33:00
+----------------------------------------
+Private Ad: 321
+Expires: 2025-11-11
+Days left: 211
+----------------------------------------
+Custom Post by 123123:
+123312
+Published: 2025-04-13 17:33:24
+----------------------------------------
+News: This is an example of a news post.
+
+	It covers important events happening today.
+City: Kyiv
+Published: 2025-04-13 10:30:00
+----------------------------------------
+News: Content for news from json
+City: Kyiv
+Published: 2025-04-13 17:37:33
+----------------------------------------
+Private Ad: Content for privatead from json
+Expires: 2025-12-12
+Days left: 242
+----------------------------------------
+Custom Post by Vlad O.:
+Hcontent for uniquepublish from json
+Published: 2025-04-13 17:37:33
+----------------------------------------
+Custom Post by Vlad O.:
+Content for uniquepublish from xml file with single record.
+Published: 2025-12-12
+----------------------------------------
+News: Content for news from xml file.
+City: Kyiv
+Published: 2025-12-12
+----------------------------------------
+Private Ad: Content for privatead from xml file.
+Expires: 2025-12-12
+Days left: 242
+----------------------------------------
+News: This Iz CONTENT for news feed
+City: Qew
+Published: 2025-04-13 17:35:32
+----------------------------------------
+Private Ad: This iS contEnt FOR private AD fEEd
+Expires: 2025-11-11
+Days left: 211
+----------------------------------------
+Custom Post by qwe:
+Your UniQue PUBLISH text ContEnt
+Published: 2025-04-13 17:36:21
+----------------------------------------
+News: This is an example of a news post.
+
+	It covers important events happening today.
+City: Kyiv
+Published: 2025-04-13 10:30:00
+----------------------------------------
+News: 123
+City: 123
+Published: 2025-04-13 19:20:28
+----------------------------------------
+Private Ad: 123
+Expires: 2025-11-11
+Days left: 211
+----------------------------------------
+Custom Post by 123:
+123
+Published: 2025-04-13 19:20:42
+----------------------------------------
+News: This is an example of a news post.
+
+	It covers important events happening today.
+City: Kyiv
+Published: 2025-04-13 10:30:00
+----------------------------------------
+News: Content for news from json
+City: Kyiv
+Published: 2025-04-13 19:23:33
+----------------------------------------
+Private Ad: Content for privatead from json
+Expires: 2025-12-12
+Days left: 242
+----------------------------------------
+Custom Post by Vlad O.:
+Hcontent for uniquepublish from json
+Published: 2025-04-13 19:23:33
+----------------------------------------
+Custom Post by Vlad O.:
+Content for uniquepublish from xml file with single record.
+Published: 2025-12-12
+----------------------------------------
+News: Content for news from xml file.
+City: Kyiv
+Published: 2025-12-12
+----------------------------------------
+Private Ad: Content for privatead from xml file.
+Expires: 2025-12-12
+Days left: 242
+----------------------------------------
+News: 123
+City: 1233
+Published: 2025-04-13 19:21:33
+----------------------------------------
+Private Ad: 312312
+Expires: 2025-11-11
+Days left: 211
+----------------------------------------
+Custom Post by wrewerwrewre:
+wrewrewre
+Published: 2025-04-13 19:21:46
+----------------------------------------
+News: This Iz CONTENT for news feed
+City: 123
+Published: 2025-04-13 19:22:15
+----------------------------------------
+Private Ad: This iS contEnt FOR private AD fEEd
+Expires: 2025-11-11
+Days left: 211
+----------------------------------------
+Custom Post by vlad:
+Your UniQue PUBLISH text ContEnt
+Published: 2025-04-13 19:22:57
+----------------------------------------

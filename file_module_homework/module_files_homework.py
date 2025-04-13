@@ -2,6 +2,7 @@ import os
 import json
 import xml.etree.ElementTree as ET
 from datetime import datetime
+import pyodbc
 from function_homework.decomposition_string import (
     normalize_text,
     split_into_sentences,
@@ -33,8 +34,13 @@ class BasicClass:
     def get_content(self):
         raise NotImplementedError("Subclasses must implement get_content method")
 
-    def publish(self, file):
+    def publish(self, file, db_handler=None):
         file.write(self.get_content() + "\n" + "-" * 40 + "\n")
+        if db_handler:
+            self.save_to_db(db_handler)
+
+    def save_to_db(self, db_handler):
+        raise NotImplementedError("Subclasses must implement save_to_db method")
 
 class News(BasicClass):
     def __init__(self, text=None, city=None, date=None, from_file=False):
@@ -54,6 +60,9 @@ class News(BasicClass):
 
     def get_content(self):
         return f"News: {self.text}\nCity: {self.city}\nPublished: {self.date}"
+
+    def save_to_db(self, db_handler):
+        db_handler.insert_news(self.text, self.city, self.date)
 
 class PrivateAd(BasicClass):
     def __init__(self, text=None, expiration_date=None, from_file=False):
@@ -84,6 +93,9 @@ class PrivateAd(BasicClass):
     def get_content(self):
         return f"Private Ad: {self.text}\nExpires: {self.expiration_date.strftime('%Y-%m-%d')}\nDays left: {self.days_left}"
 
+    def save_to_db(self, db_handler):
+        db_handler.insert_ad(self.text, self.expiration_date.strftime('%Y-%m-%d'), self.days_left)
+
 class UniquePublish(BasicClass):
     def __init__(self, text=None, author=None, timestamp=None, from_file=False):
         super().__init__(text, from_file)
@@ -109,17 +121,21 @@ class UniquePublish(BasicClass):
             return input(prompt).strip()
         return value.strip()
 
+    def save_to_db(self, db_handler):
+        db_handler.insert_unique(self.text, self.author, self.timestamp)
+
 class NewsFeed:
     # Main class for news feed
     FILE_NAME = "news_feed_homework.txt"
     DEFAULT_FOLDER = "posts_folder"
 
-    def __init__(self):
+    def __init__(self, db_handler=None):
         self._file = open(self.FILE_NAME, "a", encoding="utf-8")
+        self.db_handler = db_handler
 
-    def create_post(self, post_class, text=None):
+    def create_post(self, post_class, text=None, db_handler=None):
         post = post_class(text) if text else post_class()
-        post.publish(self._file)
+        post.publish(self._file, db_handler=db_handler)
 
     def close_file(self):
         self._file.close()
@@ -134,7 +150,7 @@ class NewsFeed:
                 with open(file_path, "r", encoding="utf-8") as file:
                     file_content = file.read().strip()
                     print(f"Loaded content from file: {file_content}")
-                    self.create_post(post_class, file_content)
+                    self.create_post(post_class, file_content, db_handler=self.db_handler)
                 os.remove(file_path)
                 print(f"File {file_path} has been successfully processed and deleted.")
                 return
@@ -147,16 +163,19 @@ class NewsFeed:
             print("1. News")
             print("2. Private Ad")
             print("3. Unique publish")
-            print("4. Exit")
+            print("4. Show data from database")
+            print("5. Exit")
 
             choice = input("Enter your choice: ").strip()
 
-            if choice == "4":
+            if choice == "5":
                 print("Your exit was successful")
                 self.close_file()
                 break
             elif choice in {"1", "2", "3"}:
                 self._process_with_file_check({"1": News, "2": PrivateAd, "3": UniquePublish}[choice])
+            elif choice == "4":
+                self.db_handler.show_data_from_db()
             else:
                 print("Invalid choice")
 
@@ -172,25 +191,112 @@ class NewsFeed:
                         self.txt_process(post_class)
                         return
                     elif file_type == ".json":
-                        processor = JsonPostProcessor()
+                        processor = JsonPostProcessor(db_handler=self.db_handler)
                         processor.process()
                         return
                     elif file_type == ".xml":
-                        processor = XmlPostProcessor()
+                        processor = XmlPostProcessor(db_handler=self.db_handler)
                         processor.process()
                         return
                     else:
                         print("Invalid file type. Choose from .txt, .json, .xml.")
             elif use_file == "no":
-                self.create_post(post_class)
+                self.create_post(post_class, db_handler=self.db_handler)
                 return
             else:
                 print("Please enter 'yes' or 'no'.")
 
+class DBHandler:
+    def __init__(self):
+        self.conn = pyodbc.connect(
+            'DRIVER={SQLite3 ODBC Driver};'
+            'Direct=True;'
+            'Database=news_feed.db;'
+            'String Types=Unicode'
+        )
+        self.cursor = self.conn.cursor()
+        self._create_tables()
+
+    def _create_tables(self):
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS News (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                text TEXT,
+                city TEXT,
+                date TEXT
+            )
+        ''')
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS PrivateAd (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                text TEXT,
+                expiration_date TEXT,
+                days_left INTEGER
+            )
+        ''')
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS UniquePublish (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                text TEXT,
+                author TEXT,
+                timestamp TEXT
+            )
+        ''')
+        self.conn.commit()
+
+    def insert_news(self, text, city, date):
+        self.cursor.execute("INSERT INTO News (text, city, date) VALUES (?, ?, ?)", (text, city, date))
+        self.conn.commit()
+
+    def insert_ad(self, text, expiration_date, days_left):
+        self.cursor.execute("INSERT INTO PrivateAd (text, expiration_date, days_left) VALUES (?, ?, ?)", (text, expiration_date, days_left))
+        self.conn.commit()
+
+    def insert_unique(self, text, author, timestamp):
+        self.cursor.execute("INSERT INTO UniquePublish (text, author, timestamp) VALUES (?, ?, ?)", (text, author, timestamp))
+        self.conn.commit()
+
+    def show_data_from_db(self):
+        print("Select table to view:")
+        print("1. News")
+        print("2. Private Ad")
+        print("3. Unique Publish")
+
+        choice = input("Enter table number: ").strip()
+
+        table_map = {
+            "1": "News",
+            "2": "PrivateAd",
+            "3": "UniquePublish"
+        }
+
+        table = table_map.get(choice)
+        if not table:
+            print("Invalid table choice.")
+            return
+
+        try:
+            self.cursor.execute(f"SELECT * FROM {table}")
+            rows = self.cursor.fetchall()
+            if not rows:
+                print(f"No data found in {table} table.")
+                return
+
+            print(f"\n--- {table} Table ---")
+            for row in rows:
+                print(dict(zip([column[0] for column in self.cursor.description], row)))
+            print("-" * 40)
+        except Exception as e:
+            print(f"Error fetching data from {table}: {e}")
+
+    def close(self):
+        self.conn.close()
+
 class JsonPostProcessor:
-    def __init__(self, output_file="news_feed_homework.txt"):
+    def __init__(self, output_file="news_feed_homework.txt", db_handler=None):
         self.output_file = output_file
         self.file_path = None
+        self.db_handler = db_handler
 
     def process(self):
         while True:
@@ -261,7 +367,7 @@ class JsonPostProcessor:
             print(f"Unknown post type: {post_type}")
             return
 
-        post.publish(file)
+        post.publish(file, db_handler=self.db_handler)
         print(f"Post of type '{post_type}' published successfully.")
 
     def _format_text(self, text):
@@ -290,9 +396,10 @@ class JsonPostProcessor:
 
 
 class XmlPostProcessor:
-    def __init__(self, output_file="news_feed_homework.txt"):
+    def __init__(self, output_file="news_feed_homework.txt", db_handler=None):
         self.output_file = output_file
         self.file_path = None
+        self.db_handler = db_handler
 
     def process(self):
         while True:
@@ -405,7 +512,7 @@ class XmlPostProcessor:
             print(f"Unknown post type: {post_type}")
             return
 
-        post.publish(file)
+        post.publish(file, db_handler=self.db_handler)
         print(f"Post of type '{post_type}' published successfully.")
 
     def _format_text(self, text):
@@ -434,7 +541,8 @@ class XmlPostProcessor:
 
 
 if __name__ == "__main__":
-    news_feed = NewsFeed()
+    db_handler = DBHandler()
+    news_feed = NewsFeed(db_handler=db_handler)
     news_feed.run()
 
 class FilePostProcessor:
@@ -468,4 +576,3 @@ class FilePostProcessor:
 if __name__ == "__main__":
     file_processor = FilePostProcessor()
     file_processor.process_file()
-
