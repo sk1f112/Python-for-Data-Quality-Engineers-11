@@ -15,7 +15,14 @@
   },
   {
     "type": "UniquePublish",
-    "text": "HContent for UniquePublish from json",
+    "text": "Content for UniquePublish from json",
+    "city": null,
+    "expiration_date": null,
+    "author": "Vlad O."
+  },
+  {
+    "type": "UniquePublish",
+    "text": "Content for UniquePublish from json",
     "city": null,
     "expiration_date": null,
     "author": "Vlad O."

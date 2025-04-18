@@ -172,3 +172,200 @@ Custom Post by vlad:
 Your UniQue PUBLISH text ContEnt
 Published: 2025-04-13 19:22:57
 ----------------------------------------
+News: 123
+City: 123
+Published: 2025-04-18 19:15:37
+----------------------------------------
+News: 123
+City: 123
+Published: 2025-04-18 19:15:43
+----------------------------------------
+News: This is an example of a news post.
+
+	It covers important events happening today.
+City: Kyiv
+Published: 2025-04-13 10:30:00
+----------------------------------------
+News: This is an example of a news post.
+
+	It covers important events happening today.
+City: Kyiv
+Published: 2025-04-13 10:30:00
+----------------------------------------
+News: This is an example of a news post.
+
+	It covers important events happening today.
+City: Kyiv
+Published: 2025-04-13 10:30:00
+----------------------------------------
+News: Content for news from json
+City: Kyiv
+Published: 2025-04-18 19:18:10
+----------------------------------------
+Private Ad: Content for privatead from json
+Expires: 2025-12-12
+Days left: 237
+----------------------------------------
+Custom Post by Vlad O.:
+Hcontent for uniquepublish from json
+Published: 2025-04-18 19:18:10
+----------------------------------------
+News: Content for news from json
+City: Kyiv
+Published: 2025-04-18 19:18:38
+----------------------------------------
+Private Ad: Content for privatead from json
+Expires: 2025-12-12
+Days left: 237
+----------------------------------------
+Custom Post by Vlad O.:
+Hcontent for uniquepublish from json
+Published: 2025-04-18 19:18:38
+----------------------------------------
+News: Content for news from json
+City: Kyiv
+Published: 2025-04-18 19:19:54
+----------------------------------------
+Private Ad: Content for privatead from json
+Expires: 2025-12-12
+Days left: 237
+----------------------------------------
+Custom Post by Vlad O.:
+Hcontent for uniquepublish from json
+Published: 2025-04-18 19:19:54
+----------------------------------------
+News: Content for news from json
+City: Kyiv
+Published: 2025-04-18 19:20:22
+----------------------------------------
+Private Ad: Content for privatead from json
+Expires: 2025-12-12
+Days left: 237
+----------------------------------------
+Custom Post by Vlad O.:
+Hcontent for uniquepublish from json
+Published: 2025-04-18 19:20:22
+----------------------------------------
+News: Content for news from json
+City: Kyiv
+Published: 2025-04-18 19:25:58
+----------------------------------------
+News: Content for news from json
+City: Kyiv
+Published: 2025-04-18 19:26:54
+----------------------------------------
+News: Content for news from json
+City: Kyiv
+Published: 2025-04-18 19:27:41
+----------------------------------------
+News: Content for news from json
+City: Kyiv
+Published: 2025-04-18 19:30:11
+----------------------------------------
+Private Ad: Content for privatead from json
+Expires: 2025-12-12
+Days left: 237
+----------------------------------------
+Custom Post by Vlad O.:
+Hcontent for uniquepublish from json
+Published: 2025-04-18 19:30:11
+----------------------------------------
+News: Content for news from json
+City: Kyiv
+Published: 2025-04-18 19:31:39
+----------------------------------------
+Private Ad: Content for privatead from json
+Expires: 2025-12-12
+Days left: 237
+----------------------------------------
+Custom Post by Vlad O.:
+Hcontent for uniquepublish from json
+Published: 2025-04-18 19:31:39
+----------------------------------------
+News: Content for news from json
+City: Kyiv
+Published: 2025-04-18 19:37:25
+----------------------------------------
+Private Ad: Content for privatead from json
+Expires: 2025-12-12
+Days left: 237
+----------------------------------------
+Custom Post by Vlad O.:
+Content for uniquepublish from json
+Published: 2025-04-18 19:37:25
+----------------------------------------
+News: Content for news from json
+City: Kyiv
+Published: 2025-04-18 19:38:39
+----------------------------------------
+News: Content for news from json
+City: Kyiv
+Published
+----------------------------------------
+Private Ad: Content for privatead from json
+Expires: 2025-12-12
+Days left: 237
+----------------------------------------
+News: Content for news from json
+City: Kyiv
+Published
+----------------------------------------
+Private Ad: Content for privatead from json
+Expires: 2025-12-12
+Days left: 237
+----------------------------------------
+News: Content for news from json
+City: Kyiv
+Published
+----------------------------------------
+Private Ad: Content for privatead from json
+Expires: 2025-12-12
+Days left: 237
+----------------------------------------
+News: Content for news from json
+City: Kyiv
+Published
+----------------------------------------
+Private Ad: Content for privatead from json
+Expires: 2025-12-12
+Days left: 237
+News: Content for news from json
+City: Kyiv
+Published: 2025-04-18 19:55:34
+----------------------------------------
+Private Ad: Content for privatead from json
+Expires: 2025-12-12
+Days left: 237
+----------------------------------------
+Custom Post by Vlad O.:
+Content for uniquepublish from json
+Published: 2025-04-18 19:55:34
+----------------------------------------
+Custom Post by Vlad O.:
+Content for uniquepublish from json
+Published: 2025-04-18 19:55:34
+----------------------------------------
+News: Content for news from xml file.
+City: Kyiv
+Published: 2025-12-12
+----------------------------------------
+Private Ad: Content for privatead from xml file.
+Expires: 2025-12-12
+Days left: 237
+----------------------------------------
+News: Content for news from json
+City: Kyiv
+Published: 2025-04-18 19:56:14
+----------------------------------------
+Private Ad: Content for privatead from json
+Expires: 2025-12-12
+Days left: 237
+----------------------------------------
+Custom Post by Vlad O.:
+Content for uniquepublish from json
+Published: 2025-04-18 19:56:14
+----------------------------------------
+Custom Post by Vlad O.:
+Content for uniquepublish from json
+Published: 2025-04-18 19:56:14
+----------------------------------------

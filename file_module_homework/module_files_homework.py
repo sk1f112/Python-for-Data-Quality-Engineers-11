@@ -242,15 +242,39 @@ class DBHandler:
         ''')
         self.conn.commit()
 
+    def is_duplicate_news(self, text, city):
+        self.cursor.execute("SELECT COUNT(*) FROM News WHERE text=? AND city=?", (text, city))
+        return self.cursor.fetchone()[0] > 0
+
+    def is_duplicate_ad(self, text, expiration_date):
+        self.cursor.execute("SELECT COUNT(*) FROM PrivateAd WHERE text=? AND expiration_date=?", (text, expiration_date))
+        return self.cursor.fetchone()[0] > 0
+
+    def is_duplicate_unique(self, text, author):
+        self.cursor.execute("SELECT COUNT(*) FROM UniquePublish WHERE text=? AND author=?", (text, author))
+        return self.cursor.fetchone()[0] > 0
+
     def insert_news(self, text, city, date):
+        text = normalize_text(text)
+        if self.is_duplicate_news(text, city):
+            print("Duplicate News entry detected. Skipping insertion.")
+            return
         self.cursor.execute("INSERT INTO News (text, city, date) VALUES (?, ?, ?)", (text, city, date))
         self.conn.commit()
 
     def insert_ad(self, text, expiration_date, days_left):
-        self.cursor.execute("INSERT INTO PrivateAd (text, expiration_date, days_left) VALUES (?, ?, ?)", (text, expiration_date, days_left))
+        if self.is_duplicate_ad(text, expiration_date):
+            print("Duplicate Private Ad detected. Skipping insertion.")
+            return
+        self.cursor.execute("INSERT INTO PrivateAd (text, expiration_date, days_left) VALUES (?, ?, ?)",
+                            (text, expiration_date, days_left))
         self.conn.commit()
 
     def insert_unique(self, text, author, timestamp):
+        text = normalize_text(text)
+        if self.is_duplicate_unique(text, author):
+            print("Duplicate Unique entry detected. Skipping insertion.")
+            return
         self.cursor.execute("INSERT INTO UniquePublish (text, author, timestamp) VALUES (?, ?, ?)", (text, author, timestamp))
         self.conn.commit()
 
